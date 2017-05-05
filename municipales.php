@@ -27,8 +27,6 @@
                                         permisos, ubch, id_clap, nombre, apellido, cedula, telefono, direccion, responsables.id as id_responsable,
                                         (SELECT nombre from categoria where id = usuarios.categoria) as categoria1,
                                         (SELECT descripcion from centro_v where id_centro = usuarios.ubch) as descripcion,
-                                        (SELECT comunidad from reg_usuarios where id_usu = usuarios.id_clap) as comunidad,
-                                        (SELECT ape_usu from reg_usuarios where id_usu = usuarios.id_clap) as codigo,
 										(SELECT parroquia from parroquias where id = usuarios.id_parroquia) as parroquia
 										FROM usuarios 
                                         INNER JOIN responsables ON usuarios.id = responsables.id_usuario
@@ -38,8 +36,18 @@
 						$total = count($crud->filas);
 						if($total > 0)
 						{
+                            $comunidad = "";
+                            $codigo = "";
+
 							foreach ($crud->filas as  $row) 
 							{
+                                if($row['id_clap'] != "")
+                                {
+                                    $crud->sql = "SELECT comunidad, ape_usu from reg_usuarios where id_usu = $row[id_clap]";
+                                    $crud->leer1();
+                                    $comunidad = $crud->filas1[0]['comunidad'];
+                                    $codigo    = $crud->filas1[0]['ape_usu'];
+                                }
 							?>
 								<tr>
 									<td><?php echo $row['usuario']; ?></td>
@@ -50,7 +58,7 @@
                                     <td><?php echo $row['mision']; ?></td>
                                     <td><?php echo $row['institucion']; ?></td>
                                     <td><?php echo $row['movimiento_social']; ?></td>
-                                    <td><?php echo $row['comunidad']."<br>".$row['codigo']; ?></td>
+                                    <td><?php echo $comunidad."<br>".$codigo; ?></td>
                                     <td><?php echo $row['juventud']; ?></td>
                                     <td><?php echo $row['otros']; ?></td>
                                     <td>
@@ -96,6 +104,8 @@
                                 <td colspan=""></td>
                                 <td colspan=""></td>
                                 <td colspan=""></td>
+                                <td colspan=""></td>
+                                <td colspan=""></td>
 							</tr>
 						<?php
 						}
@@ -120,9 +130,9 @@
                    		<div class="row">
                             <div class="form-group">
                             	<div class="col-md-6">
-                            		<select name="estado" id="estado" disabled="">
+                            		<select name="estado" id="estado" readonly="">
                             			<?php
-                            				$crud->sql = "SELECT id , estado from estados where id = 4";
+                            				$crud->sql = "SELECT id , estado from estados where id = $_SESSION[estado]";
                             				$crud->leer();
                             				foreach ($crud->filas as $value) 
                             				{
@@ -137,7 +147,7 @@
                             	<div class="col-md-6">
                             		<select name="municipio" id="municipio" class="form-control">
                             			<?php
-                            				$crud->sql = "SELECT id_municipio , municipio from municipios where id_estado = 4 and id_municipio = $municipio";
+                            				$crud->sql = "SELECT id_municipio , municipio from municipios where id_estado = $_SESSION[estado] and id_municipio = $municipio";
                             				$crud->leer();
                             				foreach ($crud->filas as $value) 
                             				{
@@ -153,7 +163,7 @@
                             	<div class="col-md-6">
                             		<select name="parroquia" id="parroquia" class="form-control" required="">
                             			<?php
-                            				$crud->sql = "SELECT id , parroquia from parroquias where id_estado = 4 and id_municipio = $municipio";
+                            				$crud->sql = "SELECT id , parroquia from parroquias where id_estado = $_SESSION[estado] and id_municipio = $municipio";
                             				$crud->leer();
                             				foreach ($crud->filas as $value) 
                             				{
@@ -242,12 +252,12 @@
                                         <option></option>
                             			<?php
                             				
-                            				$crud->sql = "SELECT id_usu, ape_usu, comunidad from reg_usuarios where grupo <> ''";
-                            				$crud->leer();
-                            				$claps = $crud->filas;
+                            				$crud->sql = "SELECT id_usu, ape_usu, comunidad from reg_usuarios where grupo <> '' and id_estado = $_SESSION[estado] and id_municipio = $_SESSION[municipio]";
+                            				$crud->leer1();
+                            				$claps = $crud->filas1;
                             				$crud->sql = "SELECT id_clap from usuarios where id_clap <> 0 and id_clap is not null";
-                            				$crud->leer();
-                            				$clap_registrado = $crud->filas;
+                            				$crud->leer1();
+                            				$clap_registrado = $crud->filas1;
                             				foreach ($claps as $row) 
                             				{
                             					if(count($clap_registrado) > 0)
@@ -337,7 +347,7 @@
                                 <div class="col-md-6">
                                     <select name="estado" id="estado" disabled="">
                                         <?php
-                                            $crud->sql = "SELECT id , estado from estados where id = 4";
+                                            $crud->sql = "SELECT id , estado from estados where id = $_SESSION[estado]";
                                             $crud->leer();
                                             foreach ($crud->filas as $value) 
                                             {
@@ -352,7 +362,7 @@
                                 <div class="col-md-6">
                                     <select name="municipio" id="municipio" class="form-control">
                                         <?php
-                                            $crud->sql = "SELECT id_municipio , municipio from municipios where id_estado = 4 and id_municipio = $municipio";
+                                            $crud->sql = "SELECT id_municipio , municipio from municipios where id_estado = $_SESSION[estado] and id_municipio = $municipio";
                                             $crud->leer();
                                             foreach ($crud->filas as $value) 
                                             {
@@ -368,7 +378,7 @@
                                 <div class="col-md-6">
                                     <select name="parroquia_modi" id="parroquia_modi" class="form-control" required="">
                                         <?php
-                                            $crud->sql = "SELECT id , parroquia from parroquias where id_estado = 4 and id_municipio = $municipio";
+                                            $crud->sql = "SELECT id , parroquia from parroquias where id_estado = $_SESSION[estado] and id_municipio = $municipio";
                                             $crud->leer();
                                             foreach ($crud->filas as $value) 
                                             {
@@ -442,9 +452,9 @@
                                         <option></option>
                                         <?php
                                             
-                                            $crud->sql = "SELECT id_usu, ape_usu, comunidad from reg_usuarios where grupo <> ''";
-                                            $crud->leer();
-                                            $claps = $crud->filas;
+                                            $crud->sql = "SELECT id_usu, ape_usu, comunidad from reg_usuarios where grupo <> '' and id_estado = $_SESSION[estado] and id_municipio = $_SESSION[municipio]";
+                                            $crud->leer1();
+                                            $claps = $crud->filas1;
                                             foreach ($claps as $row) 
                                             {
                                                     echo "<option value='".$row['id_usu']."'>".utf8_encode($row['comunidad'])." - ".utf8_encode($row['ape_usu'])."</option>";
@@ -574,7 +584,7 @@ require_once "footer.php";
 
 //Verificar contraseña-------------------------------------------------
 
-    $.getJSON('grabar_locales.php', {accion: 'verificar', cuenta: '<?php echo $_SESSION["user"]; ?>'}, function(data){
+    $.getJSON('grabar_locales.php', {accion: 'verificar_municipales', cuenta: '<?php echo $_SESSION["user"]; ?>'}, function(data){
         if(typeof(data.error) == "undefined")
         {
             if(data.actualizar == 0)
@@ -626,8 +636,11 @@ require_once "footer.php";
 
 //-----------------Otros-----------------------------------------------------
 		$("#parroquia").select2();
+        $("#parroquia_modi").select2();
+        $("#clap_modi").select2();
 		$("#clap").select2();
 		$("#ubch").select2();
+        
 
         $("#tabla").dataTable({
             "language" : {"url" : "json/esp.json"},
@@ -885,7 +898,7 @@ $("#modificar_cuenta").on('show.bs.modal', function(e){
     if(x != "")
     {
         $("#section6_modi").show('slow/400/fast');
-        $(e.currentTarget).find("#clap_modi").val(x);   
+        $(e.currentTarget).find("#clap_modi").val(x).prop('selected', true).change();   
     }
 
     var x = $(e.relatedTarget).data().juventud_modi;
@@ -989,7 +1002,7 @@ $("#modificar_cuenta").on('hidden.bs.modal', function(){
                     $colores = ["#FF6600", "#FCD202", "#B0DE09", "#0D8ECF", "#2A0CD0", "#CD0D74"];
                     $crud->sql = "SELECT 
                     (SELECT nombre from categoria where id = usuarios.categoria) as categoria, 
-                    COUNT(*) as total from usuarios where categoria <> 1 and categoria <> 2 and id_municipio = $municipio GROUP BY categoria ORDER BY total desc
+                    COUNT(*) as total from usuarios where categoria <> 1 and categoria <> 2 and id_estado = $_SESSION[estado] and id_municipio = $municipio GROUP BY categoria ORDER BY total desc
                     ";
 
                     $crud->leer();

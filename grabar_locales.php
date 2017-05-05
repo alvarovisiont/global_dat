@@ -2,6 +2,11 @@
 	require_once "clases/crud.php";
 	$crud = new Crud();
 
+	if(!isset($_SESSION))
+	{
+		session_start();
+	}
+
 	switch ($_REQUEST['accion']) 
 	{
 
@@ -42,50 +47,50 @@
 				if(!empty($_POST['clap']))
 				{
 					//echo "Aqui Clap";
-					$crud->campos = "usuario, clave, nivel, categoria, id_clap, permisos, id_municipio, id_parroquia, actualizar";	
-					$crud->valores = "'$parroquia', 123456789, 3, $_POST[categoria], $_POST[clap], '$_POST[permisos]', $_POST[municipio], $_POST[parroquia], 0";
+					$crud->campos = "usuario, clave, nivel, categoria, id_clap, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
+					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], $_POST[clap], '$_POST[permisos]',$_POST[estado], $_POST[municipio], $_POST[parroquia], 0";
 				}
 				else if(!empty($_POST['ubch']))
 				{
 					//echo "Aqui Ubch";
-					$crud->campos = "usuario, clave, nivel, categoria, ubch, permisos, id_municipio, id_parroquia, actualizar";	
-					$crud->valores = "'$parroquia', 123456789, 3, $_POST[categoria], '$_POST[ubch]', '$_POST[permisos]', $_POST[municipio], $_POST[parroquia], 0";	
+					$crud->campos = "usuario, clave, nivel, categoria, ubch, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
+					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], '$_POST[ubch]', '$_POST[permisos]', $_POST[estado], $_POST[municipio], $_POST[parroquia], 0";	
 				}
 				else if(!empty($_POST['consejo_comunal']))
 				{
 					//echo "Aqui concejo comunal";
-					$crud->campos = "usuario, clave, nivel, categoria, consejo_comunal, permisos, id_municipio, id_parroquia, actualizar";	
-					$crud->valores = "'$parroquia', 123456789, 3, $_POST[categoria], '$_POST[consejo_comunal]', '$_POST[permisos]', $_POST[municipio], $_POST[parroquia], 0";		
+					$crud->campos = "usuario, clave, nivel, categoria, consejo_comunal, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
+					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], '$_POST[consejo_comunal]', '$_POST[permisos]', $_POST[estado], $_POST[municipio], $_POST[parroquia], 0";		
 				}
 				else if(!empty($_POST['misiones']))
 				{
 					
-					$crud->campos = "usuario, clave, nivel, categoria, mision, permisos, id_municipio, id_parroquia, actualizar";	
-					$crud->valores = "'$parroquia', 123456789, 3, $_POST[categoria], '$_POST[misiones]', '$_POST[permisos]', $_POST[municipio], $_POST[parroquia], 0";			
+					$crud->campos = "usuario, clave, nivel, categoria, mision, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
+					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], '$_POST[misiones]', '$_POST[permisos]', $_POST[estado], $_POST[municipio], $_POST[parroquia], 0";			
 				}
 				else if(!empty($_POST['institucion']))
 				{
 					//echo "Aqui institucion";
-					$crud->campos = "usuario, clave, nivel, categoria, institucion, permisos, id_municipio, id_parroquia, actualizar";	
-					$crud->valores = "'$parroquia', 123456789, 3, $_POST[categoria], '$_POST[institucion]', '$_POST[permisos]', $_POST[municipio], $_POST[parroquia], 0";				
+					$crud->campos = "usuario, clave, nivel, categoria, institucion, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
+					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], '$_POST[institucion]', '$_POST[permisos]', $_POST[estado], $_POST[municipio], $_POST[parroquia], 0";				
 				}
 				else if (!empty($_POST['movimientos_sociales'])) 
 				{
 					//echo "Aqui Movimiento social";
-					$crud->campos = "usuario, clave, nivel, categoria, movimiento_social, permisos, id_municipio, id_parroquia, actualizar";	
-					$crud->valores = "'$parroquia', 123456789, 3, $_POST[categoria], '$_POST[movimientos_sociales]', '$_POST[permisos]', $_POST[municipio], $_POST[parroquia], 0";					
+					$crud->campos = "usuario, clave, nivel, categoria, movimiento_social, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
+					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], '$_POST[movimientos_sociales]', '$_POST[permisos]', $_POST[estado], $_POST[municipio], $_POST[parroquia], 0";					
 				}
 				else if (!empty($_POST['juventud'])) 
 				{
 					//echo "Aqui Movimiento social";
-					$crud->campos = "usuario, clave, nivel, categoria, juventud, permisos, id_municipio, id_parroquia, actualizar";	
-					$crud->valores = "'$parroquia', 123456789, 3, $_POST[categoria], '$_POST[juventud]', '$_POST[permisos]', $_POST[municipio], $_POST[parroquia], 0";					
+					$crud->campos = "usuario, clave, nivel, categoria, juventud, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
+					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], '$_POST[juventud]', '$_POST[permisos]', $_POST[estado], $_POST[municipio], $_POST[parroquia], 0";					
 				}
 				else if (!empty($_POST['otros'])) 
 				{
 					//echo "Aqui Movimiento social";
-					$crud->campos = "usuario, clave, nivel, categoria, otros, permisos, id_municipio, id_parroquia, actualizar";	
-					$crud->valores = "'$parroquia', 123456789, 3, $_POST[categoria], '$_POST[otros]', '$_POST[permisos]', $_POST[municipio], $_POST[parroquia], 0";					
+					$crud->campos = "usuario, clave, nivel, categoria, otros, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
+					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], '$_POST[otros]', '$_POST[permisos]', $_POST[estado], $_POST[municipio], $_POST[parroquia], 0";					
 				}
 				$crud->crear();
 
@@ -170,7 +175,43 @@
 			header('location: municipales.php');
 		break;
 
-		case 'verificar':
+		case 'verificar_estado':
+			$usuario = $_GET['cuenta'];
+			$crud->sql= "SELECT id, clave, actualizar from usuarios  where usuario = '$usuario' and id_estado = $_SESSION[estado] and actualizar = 0";
+			$crud->leer();
+			$total = count($crud->filas);
+			$data = [];
+			if( $total > 0)
+			{
+				$data = ['clave' => $crud->filas[0]['clave'], 'actualizar' => $crud->filas[0]['actualizar'], 'id' => $crud->filas[0]['id']];
+			}
+			else
+			{
+				$data = ['error' => 'no se encontro resultados'];
+			}
+			$crud = null;
+			echo json_encode($data);
+		break;
+
+		case 'verificar_municipales':
+			$usuario = $_GET['cuenta'];
+			$crud->sql= "SELECT id, clave, actualizar from usuarios  where usuario like '$usuario' and id_estado = $_SESSION[estado] and id_municipio = $_SESSION[municipio] and actualizar = 0";
+			$crud->leer();
+			$total = count($crud->filas);
+			$data = [];
+			if( $total > 0)
+			{
+				$data = ['clave' => $crud->filas[0]['clave'], 'actualizar' => $crud->filas[0]['actualizar'], 'id' => $crud->filas[0]['id']];
+			}
+			else
+			{
+				$data = ['error' => 'no se encontro resultados'];
+			}
+			$crud = null;
+			echo json_encode($data);
+		break;
+
+		case 'verificar_locales':
 			$usuario = $_GET['cuenta'];
 			$crud->sql= "SELECT id, clave, actualizar from usuarios  where usuario = '$usuario'";
 			$crud->leer();

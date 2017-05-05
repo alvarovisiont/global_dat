@@ -19,24 +19,40 @@
                         (SELECT descripcion from entes where id_ente = reg_usuarios_det.id_ente) as ente
                         from reg_usuarios_det where id_usu = $_SESSION[clap] and id_ente <> ''";
                         $crud->leer();
-                        foreach ($crud->filas as $row) 
+                        $total = count($crud->filas);
+                        if($total > 0)
                         {
-                            if($row['id_rol'] == 1)
-                                {
-                                    $rol = "1.".$row['rol'];
-                                }
-                                else
-                                {
-                                    $rol = $row['rol'];
-                                }
-                            echo "<tr>
-                                    <td>".$row['ced']."</td>
-                                    <td>".$row['nom_usu']." ".$row['ape_usu']."</td>
-                                    <td>".$row['ente']."</td>
-                                    <td>".$row['telf']."</td>
-                                    <td>".$rol."</td>
-                                </tr>";
+                            foreach ($crud->filas as $row) 
+                            {
+                                if($row['id_rol'] == 1)
+                                    {
+                                        $rol = "1.".$row['rol'];
+                                    }
+                                    else
+                                    {
+                                        $rol = $row['rol'];
+                                    }
+                                echo "<tr>
+                                        <td>".$row['ced']."</td>
+                                        <td>".$row['nom_usu']." ".$row['ape_usu']."</td>
+                                        <td>".$row['ente']."</td>
+                                        <td>".$row['telf']."</td>
+                                        <td>".$rol."</td>
+                                    </tr>";
+                            }
                         }
+                        else
+                        {
+                                echo "<tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>";
+                        }
+
+                            
                     ?>
                 </tbody>
 			</table>

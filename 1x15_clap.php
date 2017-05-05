@@ -20,30 +20,45 @@
 	                        (SELECT descripcion from entes where id_ente = reg_usuarios_det.id_ente) as ente
 	                        from reg_usuarios_det where id_usu = $_SESSION[clap] and id_ente <> ''";
 	                        $crud->leer();
-	                        foreach ($crud->filas as $row) 
-	                        {
-	                        	$crud->sql = "SELECT id from 1x15_clap where id_lider_1x15 = $row[id_usu_det]";
-	                        	$crud->total();
-	                        	$integrantes = $crud->total;
+                            $total = count($crud->filas);
+                            if($total > 0)
+                            {
+                                foreach ($crud->filas as $row) 
+                                {
+                                    $crud->sql = "SELECT id from 1x15_clap where id_lider_1x15 = $row[id_usu_det]";
+                                    $crud->total();
+                                    $integrantes = $crud->total;
 
-	                        	if($row['id_rol'] == 1)
-	                        	{
-	                        		$rol = "1.".$row['rol'];
-	                        	}
-	                        	else
-	                        	{
-	                        		$rol = $row['rol'];
-	                        	}
-	                        	$boton = "<a href='conformantes_1x15.php?id=".base64_encode($row['id_usu_det'])."' class='btn btn-danger btn-sm'>$integrantes&nbsp;&nbsp;<span class='glyphicon glyphicon-user'></span></a>";
-	                            echo "<tr>
-	                                    <td>".$row['ced']."</td>
-	                                    <td>".$row['nom_usu']." ".$row['ape_usu']."</td>
-	                                    <td>".$row['ente']."</td>
-	                                    <td>".$row['telf']."</td>
-	                                    <td>".$rol."</td>
-	                                    <td>".$boton."</td>
-	                                </tr>";
-	                        }
+                                    if($row['id_rol'] == 1)
+                                    {
+                                        $rol = "1.".$row['rol'];
+                                    }
+                                    else
+                                    {
+                                        $rol = $row['rol'];
+                                    }
+                                    $boton = "<a href='conformantes_1x15.php?id=".base64_encode($row['id_usu_det'])."' class='btn btn-danger btn-sm'>$integrantes&nbsp;&nbsp;<span class='glyphicon glyphicon-user'></span></a>";
+                                    echo "<tr>
+                                            <td>".$row['ced']."</td>
+                                            <td>".$row['nom_usu']." ".$row['ape_usu']."</td>
+                                            <td>".$row['ente']."</td>
+                                            <td>".$row['telf']."</td>
+                                            <td>".$rol."</td>
+                                            <td>".$boton."</td>
+                                        </tr>";
+                                }
+                            }
+                            else
+                            {
+                                echo "<tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>";
+    	                    }      
 	                    ?>
 	                </tbody>
 				</table>

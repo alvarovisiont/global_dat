@@ -8,6 +8,7 @@ class Crud
 	public $valores;
 	public $sql;
 	public $filas;
+	public $filas1;
 	public $total;	
 
 	public function crear()
@@ -19,6 +20,7 @@ class Crud
 		$sql = "INSERT INTO $this->from ($this->campos) VALUES ($this->valores)";
 		/*echo $sql;
 		exit();*/
+
 		$res = $db->prepare($sql);
 		$res->execute();
 		$res->closeCursor();
@@ -114,5 +116,25 @@ class Crud
 		$db = null;
 		$model = null;
 	}
+
+	public function leer1()
+	{
+		//Devuelve resultados de un query
+
+		$this->filas1 = null;
+		$model = new Conexion();
+		$db = $model->conectar1();
+		$res = $db->prepare($this->sql);
+		$res->execute();
+		while($rs = $res->fetch(PDO::FETCH_ASSOC))
+		{
+			$this->filas1[] = $rs;
+		}
+		$res->closeCursor();
+		$this->sql = null;
+		$db = null;
+		$model = null;
+	}
+
 }
 ?>

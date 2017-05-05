@@ -21,7 +21,7 @@
 				$estado = $crud->filas[0]['estado'];
 				$crud->from = "usuarios";
 				$crud->campos = "usuario, clave, nivel, categoria, id_estado, actualizar";
-				$crud->valores = "'".$estado."', 123456789, 1, 1, $_POST[estado],1";
+				$crud->valores = "'".$estado."', 12345, 1, 1, $_POST[estado],0";
 				$crud->crear();
 
 				$crud->sql = "SELECT max(id) as id from usuarios";
@@ -81,7 +81,7 @@
 			$crud->sql = "SELECT municipio from municipios where id_municipio = $_POST[municipio] and id_estado = $_POST[estado]";
 			$crud->leer();
 			$municipio = $crud->filas[0]['municipio'];
-			$crud->sql = "SELECT usuario from usuarios where usuario = '$municipio'";
+			$crud->sql = "SELECT usuario from usuarios where id_estado = $_POST[estado] and id_municipio = $_POST[municipio] and nivel = 2";
 			$crud->leer();
 			$total = count($crud->filas); 
 			if($total > 0)
@@ -95,7 +95,7 @@
 			{
 				$crud->from = "usuarios";
 				$crud->campos = "usuario, clave, nivel, categoria, permisos, id_estado, id_municipio, actualizar";
-				$crud->valores = "'$municipio', 123456789, 2, 2, '$_POST[permisos]', $_POST[estado],$_POST[municipio], 1";
+				$crud->valores = "'$municipio', 123456, 2, 2, '$_POST[permisos]', $_POST[estado],$_POST[municipio], 0";
 				$crud->crear();
 
 				$crud->sql = "SELECT max(id) as id from usuarios";
@@ -104,7 +104,7 @@
 
 				$crud->from = "responsables";
 				$crud->campos = "id_usuario, nombre, apellido, cedula, telefono, direccion, nivel";
-				$crud->valores = " $id, '$_POST[nombre]', '$_POST[apellido]', '$_POST[cedula]', '$_POST[telefono]', '$_POST[direccion]', 1";
+				$crud->valores = " $id, '$_POST[nombre]', '$_POST[apellido]', '$_POST[cedula]', '$_POST[telefono]', '$_POST[direccion]', 0";
 				$crud->crear();
 				$data = array('exito' => 'ha sido registrado');
 				echo json_encode($data);
