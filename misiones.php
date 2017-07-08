@@ -163,7 +163,7 @@
                     </div>
                 </div>
             <div class="modal-footer">
-                <button type="submit" class="add-project">Crear</button>
+                <button type="submit" class="add-project">Modificar</button>
                 <button type="button" class="cancel" data-dismiss="modal">Cerrar</button>
             </div>
             </form>
@@ -283,6 +283,11 @@
 		}).on("changeDate", function(){
 			$(this).datepicker('hide');
 		});
+        $("#fecha_nac_edit").datepicker({
+            format: "dd-mm-yyyy"
+        }).on("changeDate", function(){
+            $(this).datepicker('hide');
+        });
 
         $.getJSON('grabar_poblacion.php', {accion: 'verificar', cuenta: '<?php echo $_SESSION["user"]; ?>'}, function(data){
             if(typeof(data.error) == "undefined")

@@ -19,11 +19,11 @@
 	                        (SELECT descripcion from rol where id_rol = reg_usuarios_det.id_rol) as rol, 
 	                        (SELECT descripcion from entes where id_ente = reg_usuarios_det.id_ente) as ente
 	                        from reg_usuarios_det where id_usu = $_SESSION[clap] and id_ente <> ''";
-	                        $crud->leer();
-                            $total = count($crud->filas);
+	                        $crud->leer1();
+                            $total = count($crud->filas1);
                             if($total > 0)
                             {
-                                foreach ($crud->filas as $row) 
+                                foreach ($crud->filas1 as $row) 
                                 {
                                     $crud->sql = "SELECT id from 1x15_clap where id_lider_1x15 = $row[id_usu_det]";
                                     $crud->total();

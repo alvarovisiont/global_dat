@@ -36,12 +36,11 @@
 						$total = count($crud->filas);
 						if($total > 0)
 						{
-                            $comunidad = "";
-                            $codigo = "";
-
 							foreach ($crud->filas as  $row) 
 							{
-                                if($row['id_clap'] != "")
+                                $comunidad = "";
+                                $codigo = "";
+                                if($row['id_clap'] != null)
                                 {
                                     $crud->sql = "SELECT comunidad, ape_usu from reg_usuarios where id_usu = $row[id_clap]";
                                     $crud->leer1();

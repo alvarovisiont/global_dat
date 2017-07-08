@@ -85,6 +85,7 @@
 										data-colectivo = '$row[colectivo]',
 										data-n_colectivo = '$row[n_colectivo]'
 										>Ver&nbsp;<span class='glyphicon glyphicon-eye-open'></span></button>";
+										$eliminar = '<a href="eliminar_1x10.php?cedula='.$row['cedula'].'" class="btn btn-sm btn-danger eliminar">Eliminar&nbsp;<i class="fa fa-trash"></i></a>';
 										echo "<tr>
 												<td>$row[nombre]</td>
 												<td>$row[cedula]</td>
@@ -92,7 +93,10 @@
 												<td>$row[telefono1]</td>
 												<td>".$row['sector']."-".$row['calle']."</td>
 												<td>$row[email]</td>
-												<td>$button</td>
+												<td>
+													$button
+													$eliminar
+												</td>
 											</tr>";	
 								}
 							}
@@ -858,6 +862,20 @@
 		$('#parroquia').select2();
 		$('#centro_v').select2();
 		$('#institucion').select2();
+
+		$(".eliminar").click(function(){
+			var agree = confirm('Desea realmente eliminar este registro?');
+
+			if(agree)
+			{
+				return true;	
+			}
+			else
+			{
+				return false;
+			}
+		})
+
 
 		$("#estudia[value='si']").click(function(){
 

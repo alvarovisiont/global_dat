@@ -87,7 +87,7 @@
 			                    						UNION 
 			                    						SELECT id_usu_det, nom_usu, ape_usu, ced, nac, telf from reg_personas_det where id_clap1 = $_SESSION[clap] and ced <> ''";
 			                    			$crud->leer1();
-			                    			foreach ($crud->filas as $row) 
+			                    			foreach ($crud->filas1 as $row) 
 			                    			{
 			                    				$button = "<button type='button' class='btn btn-block btn-sm agregar' style='background-color: #C5624D; color: white;' 
 			                    					data-integrante='$row[id_usu]' 
@@ -212,8 +212,8 @@
             var chartData = [
             <?php 
                 $crud->sql = "SELECT nom_usu,  ape_usu, id_usu_det from reg_usuarios_det where id_usu = $_SESSION[clap] and id_ente <> ''";
-                $crud->leer();
-                foreach ($crud->filas as $row) 
+                $crud->leer1();
+                foreach ($crud->filas1 as $row) 
                 {
                     $crud->sql = "SELECT id from 1x15_clap where id_lider_1x15 = $row[id_usu_det]";
                     $crud->total();

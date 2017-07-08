@@ -14,37 +14,37 @@
 		break;
 
 		case '3':
-			if($_SESSION['categoria'] == "7")
+			if ($_SESSION['categoria'] == "10") 
 			{
-				header('location: clap.php');
-			}
-			elseif ($_SESSION['categoria'] == "3") 
-			{
-				header('location: ubch.php');
-			}
-			elseif ($_SESSION['categoria'] == "5") 
-			{
-				header('location: misiones.php');	
-			}
-			elseif ($_SESSION['categoria'] == "8") 
-			{
-				header('location: movimientos.php');	
-			}
-			elseif ($_SESSION['categoria'] == "6") 
-			{
-				header('location: instituciones.php');	
-			}
-			elseif ($_SESSION['categoria'] == "4") 
-			{
-				header('location: consejo_comunal.php');		
+				header('location: otros.php');		
 			}
 			elseif ($_SESSION['categoria'] == "9") 
 			{
 				header('location: juventud.php');		
 			}
-			elseif ($_SESSION['categoria'] == "10") 
+			elseif ($_SESSION['categoria'] == "8") 
 			{
-				header('location: otros.php');		
+				header('location: movimientos.php');	
+			}
+			elseif($_SESSION['categoria'] == "7")
+			{
+				header('location: clap.php');
+			}
+			elseif ($_SESSION['categoria'] == "6") 
+			{
+				header('location: instituciones.php');	
+			}
+			elseif ($_SESSION['categoria'] == "5") 
+			{
+				header('location: misiones.php');	
+			}
+			elseif ($_SESSION['categoria'] == "4") 
+			{
+				header('location: consejo_comunal.php');		
+			}
+			elseif ($_SESSION['categoria'] == "3") 
+			{
+				header('location: ubch.php');
 			}
 		break;
 

@@ -255,6 +255,47 @@
             </div>
         </div>
     </div>
+    <div id="cambiar_contraseña" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header login-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">Modificar Contraseña</h4>
+            </div>
+            <form class="form-horizontal" id="form_clave" action="grabar_locales.php" method="POST">
+            <input type="hidden" name="accion" value="cambiar_clave">
+            <input type="text" name="id_modificar" id="id_modificar">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Contraseña Insegura</label>
+                            <div class="col-md-7">
+                                <input type="text" name="contra_vieja" id="contra_vieja" readonly="" class="text-center" style="border-color: red;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Nueva Contraseña</label>
+                            <div class="col-md-7">
+                                <input type="text" name="contra_nueva" id="contra_nueva">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Repita su Contraseña</label>
+                            <div class="col-md-7">
+                                <input type="text" name="contra_repite" id="contra_repite">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="add-project">Grabar</button>
+                    <button type="button" class="cancel" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
     <div id="estadisticas" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <!-- Modal content-->
@@ -284,6 +325,57 @@
 <script src="js/amcharts/funnel.js" type="text/javascript"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
+
+        $.getJSON('grabar_locales.php', {accion: 'verificar_estado', cuenta: '<?php echo $_SESSION["user"]; ?>'}, function(data){
+            if(typeof(data.error) == "undefined")
+            {
+                if(data.actualizar == 0)
+                {
+                    $("#contra_vieja").val(data.clave);
+                    $("#id_modificar").val(data.id);
+                    $("#cambiar_contraseña").modal('show');
+                    $("#cambiar_contraseña").on('shown.bs.modal', function(){
+                        $("#contra_nueva").focus();
+                    });
+                }   
+            }
+
+        })
+
+        $("#form_clave").submit(function(){
+            if($("#contra_nueva").val() != $("#contra_repite").val())
+            {
+                alert("Las contraseñas no coinciden");
+                return false;
+            }
+            else
+            {
+                $.post('grabar_locales.php', $(this).serialize(), function(){
+                    swal({
+                        title: "Contraseña Cambiada",
+                                type: "success",
+                                showButtonCancel: false,
+                                confirmButtonText: "Cerrar",
+                                confirmButtonClass: "btn btn-info",
+                                closeOnConfirm: true
+                                },function(confirm){
+                                    if(confirm)
+                                    {
+                                        $("#form_clave").keypress(function(e){
+                                            if(e.keyCode == 13)
+                                            {
+                                                return false;
+                                            }
+                                        });
+
+                                       $("#cambiar_contraseña").modal('hide');
+                                    }
+                    });
+                });
+            }
+            return false;   
+        })
+
 
 		$("#usuario_modi").select2();
 		$("#municipio").select2();
