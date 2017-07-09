@@ -17,21 +17,35 @@
 				<?php
 					$crud->sql = "SELECT id, nombre, apellido, cedula, nac, telefono FROM estructuras WHERE id_consejo = $_SESSION[id]";
 					$crud->leer();
-					foreach ($crud->filas as $row) 
-					{
-						$crud->sql = "SELECT id from caracterizacion where id_cc_lider = $row[id]";
-						$crud->total();
-						$boton = "<a href='1x10_conformantes_consejo.php?id_consejo=".base64_encode($row['id'])."' data-toggle='modal' class='btn btn-danger btn-sm' title='editar'>
-						$crud->total&nbsp;&nbsp;<span class='glyphicon glyphicon-user'></span></a>";
-						echo "<tr>
-								<td>$row[nac]</td>
-								<td>$row[cedula]</td>
-								<td>$row[nombre]</td>
-								<td>$row[apellido]</td>
-								<td>$row[telefono]</td>
-								<td>".$boton."</td>
-							</tr>";
-					}
+                    if(count($crud->filas) > 0)
+                    {
+                        foreach ($crud->filas as $row) 
+                        {
+                            $crud->sql = "SELECT id from caracterizacion where id_cc_lider = $row[id] and estado = $_SESSION[estado] and municipio = $_SESSION[municipio]";
+                            $crud->total();
+                            $boton = "<a href='1x10_conformantes_consejo.php?id_consejo=".base64_encode($row['id'])."' data-toggle='modal' class='btn btn-danger btn-sm' title='editar'>
+                            $crud->total&nbsp;&nbsp;<span class='glyphicon glyphicon-user'></span></a>";
+                            echo "<tr>
+                                    <td>$row[nac]</td>
+                                    <td>$row[cedula]</td>
+                                    <td>$row[nombre]</td>
+                                    <td>$row[apellido]</td>
+                                    <td>$row[telefono]</td>
+                                    <td>".$boton."</td>
+                                </tr>";
+                        }
+                    }
+                    else
+                    {
+                        echo "<tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>";
+                    }
 				?>
 				</tbody>
 			</table>

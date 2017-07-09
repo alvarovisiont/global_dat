@@ -35,7 +35,8 @@
 							$crud->sql = "SELECT * from caracterizacion 
 										INNER JOIN caracterizacion_datos_al ON caracterizacion.cedula =  caracterizacion_datos_al.cedula
 										INNER JOIN caracterizacion_militancia cm ON caracterizacion.cedula = cm.cedula  
-										 where caracterizacion.id_ubch_lider = ".$id;
+										 where estado = $_SESSION[estado] and municipio = $_SESSION[municipio] and 
+										 caracterizacion.id_ubch_lider = ".$id;
 							$crud->leer();
 							if(count($crud->filas) > 0)
 							{
@@ -85,6 +86,7 @@
 										data-colectivo = '$row[colectivo]',
 										data-n_colectivo = '$row[n_colectivo]'
 										>Ver&nbsp;<span class='glyphicon glyphicon-eye-open'></span></button>";
+										$eliminar = '<a href="eliminar_1x10.php?cedula='.$row['cedula'].'" class="btn btn-sm btn-danger eliminar">Eliminar&nbsp;<i class="fa fa-trash"></i></a>';
 										echo "<tr>
 												<td>$row[nombre]</td>
 												<td>$row[cedula]</td>
@@ -92,7 +94,7 @@
 												<td>$row[telefono1]</td>
 												<td>".$row['sector']."-".$row['calle']."</td>
 												<td>$row[email]</td>
-												<td>$button</td>
+												<td>".$button.$eliminar."</td>
 											</tr>";	
 								}
 							}
@@ -206,18 +208,25 @@
 								    <label for="inputEmail3" class="col-md-2 control-label">Estado: </label>
 									    <div class="col-md-2">
 									      <select name="estado" id="estado" class="form-control input-md" disabled="">
-									      		<option value="4">Aragua</option>
+									      		<?php
+										   			$crud->sql = "SELECT id, estado from estados where id = $_SESSION[estado]";
+										   			$crud->leer();
+										   			foreach ($crud->filas as $row) 
+										   			{
+										   				echo "<option value='$row[id]'>$row[estado]</option>";
+										   			}
+										   		?>
 									      </select>
 									    </div>
 									<label for="inputEmail3" class="col-md-2 control-label">Municipio: </label>
 										<div class="col-md-2">
 										   <select name="municipio" id="municipio" class="form-control input-md" disabled="">
 										   		<?php
-										   			$crud->sql = "SELECT municipio from municipios where id_municipio = $_SESSION[municipio] and id_estado = 4";
+										   			$crud->sql = "SELECT id_municipio, municipio from municipios where id_municipio = $_SESSION[municipio] and id_estado = $_SESSION[estado]";
 										   			$crud->leer();
 										   			foreach ($crud->filas as $row) 
 										   			{
-										   				echo "<option value='$_SESSION[municipio]'>$row[municipio]</option>";
+										   				echo "<option value='$row[id_municipio]'>$row[municipio]</option>";
 										   			}
 										   		?>
 									      </select>
@@ -226,7 +235,7 @@
 										<div class="col-md-2">
 										   <select name="parroquia" id="parroquia" class="form-control input-md">
 										   		<?php
-										   			$crud->sql = "SELECT parroquia, id from parroquias where id_municipio = $_SESSION[municipio] and id_estado = 4";
+										   			$crud->sql = "SELECT parroquia, id from parroquias where id_municipio = $_SESSION[municipio] and id_estado = $_SESSION[estado]";
 										   			$crud->leer();
 										   			foreach ($crud->filas as $row) 
 										   			{
@@ -565,18 +574,25 @@
 								    <label for="inputEmail3" class="col-md-2 control-label">Estado: </label>
 									    <div class="col-md-2">
 									      <select name="estado_ver" id="estado_ver" class="form-control input-md" disabled="">
-									      		<option value="4">Aragua</option>
+									      		<?php
+										   			$crud->sql = "SELECT id, estado from estados where id = $_SESSION[estado]";
+										   			$crud->leer();
+										   			foreach ($crud->filas as $row) 
+										   			{
+										   				echo "<option value='$row[id]'>$row[estado]</option>";
+										   			}
+										   		?>
 									      </select>
 									    </div>
 									<label for="inputEmail3" class="col-md-2 control-label">Municipio: </label>
 										<div class="col-md-2">
 										   <select name="municipio_ver" id="municipio_ver" class="form-control input-md" disabled="">
 										   		<?php
-										   			$crud->sql = "SELECT municipio from municipios where id_municipio = $_SESSION[municipio] and id_estado = 4";
+										   			$crud->sql = "SELECT id_municipio, municipio from municipios where id_municipio = $_SESSION[municipio] and id_estado = $_SESSION[estado]";
 										   			$crud->leer();
 										   			foreach ($crud->filas as $row) 
 										   			{
-										   				echo "<option value='$_SESSION[municipio]'>$row[municipio]</option>";
+										   				echo "<option value='$row[id_municipio]'>$row[municipio]</option>";
 										   			}
 										   		?>
 									      </select>
@@ -585,7 +601,7 @@
 										<div class="col-md-2">
 										   <select name="parroquia_ver" id="parroquia_ver" class="form-control input-md">
 										   		<?php
-										   			$crud->sql = "SELECT parroquia, id from parroquias where id_municipio = $_SESSION[municipio] and id_estado = 4";
+										   			$crud->sql = "SELECT parroquia, id from parroquias where id_municipio = $_SESSION[municipio] and id_estado = $_SESSION[estado]";
 										   			$crud->leer();
 										   			foreach ($crud->filas as $row) 
 										   			{
@@ -831,6 +847,20 @@
 <script src="js/bootstrap-datepicker.js"></script>
 <script type="text/javascript">
 	$(function(){
+
+		$(".eliminar").click(function(){
+			var agree = confirm('Desea realmente eliminar este registro?');
+
+			if(agree)
+			{
+				return true;	
+			}
+			else
+			{
+				return false;
+			}
+		})
+
 		$('#sector').select2();
 		$('#calle').select2();
 		$('#carrera').select2();
@@ -1227,7 +1257,7 @@ $("#ocultar_estudio1").prop("checked",false);
 				{
 					$(e.currentTarget).find("#consejoc_ver[value='"+x+"']").prop('checked', true);
 					$("#c_comunal_ver").show('show/400/fast');
-					var x = $(e.relatedTarget).data().consejo;
+					var x = $(e.relatedTarget).data().n_consejo;
 						if(isNaN(x))
 						{
 							$("#c_comunal1_ver").show('slow/400/fast');

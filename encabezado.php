@@ -277,6 +277,14 @@ $crud = new Crud();
                                             <li>
                                                 <div class="navbar-content">
                                                     <span><?php echo strtoupper($_SESSION['user']); ?></span>
+                                                    <?
+                                                    if($_SESSION['nivel'] == 3)
+                                                    {
+                                                    ?>
+                                                      <span><?php echo strtoupper($_SESSION['nombre']); ?></span>
+                                                    <?
+                                                    }
+                                                    ?>
                                                     <div class="divider">
                                                     </div>
                                                     <a href="index.php?dologout=1" class="view btn-sm active">Salir</a>
@@ -302,6 +310,14 @@ $crud = new Crud();
                                             <li>
                                                 <div class="navbar-content">
                                                     <span><?php echo strtoupper($_SESSION['user']); ?></span>
+                                                    <?
+                                                    if($_SESSION['nivel'] == 3)
+                                                    {
+                                                    ?>
+                                                      <span><?php echo strtoupper($_SESSION['nombre']); ?></span>
+                                                    <?
+                                                    }
+                                                    ?>
                                                     <div class="divider">
                                                     </div>
                                                     <a href="index.php?dologout=1" class="view btn-sm active">Salir</a>
@@ -393,7 +409,15 @@ $crud = new Crud();
                                         <ul class="dropdown-menu">
                                             <li>
                                                 <div class="navbar-content">
-                                                    <span><?php echo strtoupper($_SESSION['user']);?></span>
+                                                    <span><?php echo strtoupper($_SESSION['user']); ?></span>
+                                                    <?
+                                                    if($_SESSION['nivel'] == 3)
+                                                    {
+                                                    ?>
+                                                      <span><?php echo strtoupper($_SESSION['nombre']); ?></span>
+                                                    <?
+                                                    }
+                                                    ?>
                                                     <div class="divider">
                                                     </div>
                                                     <a href="index.php?dologout=1" class="view btn-sm active">Salir</a>

@@ -22,7 +22,7 @@
 						foreach ($crud->filas as $row) 
 						{
 
-							$crud->sql = "SELECT id from caracterizacion where id_ms = $row[id]";
+							$crud->sql = "SELECT id from caracterizacion where id_ms = $row[id] and estado = $_SESSION[estado] and municipio = $_SESSION[municipio]";
 							$crud->total();
 							$boton = "<a href='1x10_conformantes_movimiento.php?id_movimiento=".base64_encode($row['id'])."' data-toggle='modal' class='btn btn-danger btn-sm' title='editar'>
 							$crud->total&nbsp;&nbsp;<span class='glyphicon glyphicon-user'></span></a>";

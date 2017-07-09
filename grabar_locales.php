@@ -39,22 +39,21 @@
 					$parroquia = "g-".$nombre."-"."01";
 				}
 
-					$parroquia = strtoupper($parroquia);
-
+				$parroquia = strtoupper($parroquia);
 				$crud->from = "usuarios";
 
 
 				if(!empty($_POST['clap']))
 				{
 					//echo "Aqui Clap";
-					$crud->campos = "usuario, clave, nivel, categoria, id_clap, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
-					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], $_POST[clap], '$_POST[permisos]',$_POST[estado], $_POST[municipio], $_POST[parroquia], 0";
+					$crud->campos = "usuario, clave, nivel, categoria, id_clap, nombre_clap, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
+					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], $_POST[clap],'$_POST[nombre_clap]', '$_POST[permisos]',$_POST[estado], $_POST[municipio], $_POST[parroquia], 0";
 				}
 				else if(!empty($_POST['ubch']))
 				{
 					//echo "Aqui Ubch";
-					$crud->campos = "usuario, clave, nivel, categoria, ubch, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
-					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], '$_POST[ubch]', '$_POST[permisos]', $_POST[estado], $_POST[municipio], $_POST[parroquia], 0";	
+					$crud->campos = "usuario, clave, nivel, categoria, ubch,nombre_ubch, permisos, id_estado, id_municipio, id_parroquia, actualizar";	
+					$crud->valores = "'$parroquia', 12345678, 3, $_POST[categoria], '$_POST[ubch]','$_POST[nombre_ubch]', '$_POST[permisos]', $_POST[estado], $_POST[municipio], $_POST[parroquia], 0";	
 				}
 				else if(!empty($_POST['consejo_comunal']))
 				{
@@ -112,8 +111,7 @@
 
 			if(!empty($_POST['ubch_modi']))
 			{
-				$crud->campos = "id_parroquia = $_POST[parroquia_modi], permisos = $_POST[permisos_modi], categoria = $_POST[categoria_modi],
-									ubch = $_POST[ubch_modi]";
+				$crud->campos = "id_parroquia = $_POST[parroquia_modi], permisos = $_POST[permisos_modi], categoria = $_POST[categoria_modi],ubch = $_POST[ubch_modi],nombre_ubch = '$_POST[nombre_ubch]";
 			}
 			else if(!empty($_POST['consejo_comunal_modi']))
 			{
@@ -137,8 +135,7 @@
 			}
 			else if(!empty($_POST['clap_modi']))
 			{
-				$crud->campos = "id_parroquia = $_POST[parroquia_modi], permisos = $_POST[permisos_modi], categoria = $_POST[categoria_modi],
-									id_clap = '$_POST[clap_modi]'";					
+				$crud->campos = "id_parroquia = $_POST[parroquia_modi], permisos = $_POST[permisos_modi], categoria = $_POST[categoria_modi], id_clap = '$_POST[clap_modi]', nombre_clap = '$_POST[nombre_clap]'";					
 			}
 			else if(!empty($_POST['juventud_modi']))
 			{

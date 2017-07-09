@@ -9,59 +9,100 @@
 					<th class="text-center">Nac</th>
 					<th class="text-center">cédula</th>
 					<th class="text-center">Nombre</th>
-					<th class="text-center">Apellido</th>
 					<th class="text-center">Cargo</th>
-					<th class="text-center">UBCH</th>
+					<th class="text-center">1 x 10</th>
 					<th class="text-center"></th>
 				</thead>
 				<tbody class="text-center">
 					<?php
-						$crud->sql = "SELECT id, nac, cedula, (SELECT descripcion from ubch_cargoss where id_cargo = ubch.id_cargo) as cargo,
-										(SELECT count(*) from caracterizacion where id_ubch_lider = ubch.id) as conformantes from ubch where $_SESSION[ubch]";
-						$crud->leer();
-                        $total = count($crud->filas);
-                        if($total > 0)
+                        if($_SESSION['estado'] == 17)
                         {
-                            foreach ($crud->filas as $row) 
+                            $crud->sql = "SELECT id, cedula, nombre, telefono, cargo,
+                                        (SELECT count(*) from caracterizacion where id_ubch_lider = ubch_sucre.id and estado = $_SESSION[estado]) as conformantes from ubch_sucre where ubch = ".$_SESSION['ubch'];
+                            $crud->leer();
+                            if(count($crud->filas) > 0)
                             {
-                                $crud->sql = "SELECT primer_ape, segundo_ape, primer_nom, segundo_nom from rep_nueva2 where cedula = ".$row['cedula'];
-                                $crud->leer();
-                                if($crud->filas[0]['primer_ape'] == "")
-                                {   
-                                }
-                                else
+                                foreach ($crud->filas as $row) 
                                 {
-                                    foreach ($crud->filas as $fila) 
-                                    {   
-                                        $data = ["$fila[primer_nom] "."$fila[primer_ape]" => $row['id']];
-                                        $boton = "<a href='conformantes_ubch.php?id=".base64_encode($row['id'])."' class='btn btn-danger btn-xs' data->Ver <span class='glyphicon glyphicon-user'></span></a>";
-
-                                        echo "<tr>
-                                                <td>$row[nac]</td>
-                                                <td>$row[cedula]</td>
-                                                <td>".$fila['primer_nom']." ".$fila['segundo_nom']."</td>
-                                                <td>".$fila['primer_ape']." ".$fila['segundo_ape']."</td>
+                                    $data = ["$row[nombre]" => $row['id']];
+                                    $boton = "<a href='conformantes_ubch.php?id=".base64_encode($row['id'])."' class='btn btn-danger btn-xs' data->Ver <span class='glyphicon glyphicon-user'></span></a>";
+                                    echo "<tr>
+                                                <td>".substr($row['cedula'], 0,1)."</td>
+                                                <td>".substr($row['cedula'], 2)."</td>
+                                                <td>".$row['nombre']."</td>
                                                 <td>".$row['cargo']."</td>
                                                 <td>".$row['conformantes']."</td>
                                                 <td>".$boton."</td>
                                             </tr>"; 
-                                    }
                                 }
+                            }
+                            else
+                            {
+                                echo "<tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>"; 
                             }
                         }
                         else
                         {
+                            $crud->sql = "SELECT id, nac, cedula, (SELECT descripcion from ubch_cargoss where id_cargo = ubch.id_cargo) as cargo,
+                                        (SELECT count(*) from caracterizacion where id_ubch_lider = ubch.id) as conformantes from ubch where id_centro = ".$_SESSION['ubch'];    
 
-                            echo "<tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>"; 
-    				    }		
+                            $crud->leer();
+                            if(count($crud->filas) > 0)
+                            {
+                                foreach ($crud->filas as $row) 
+                                {
+                                     $crud->sql = "SELECT primer_ape, segundo_ape, primer_nom, segundo_nom from rep_nueva2 where cedula = ".$row['cedula'];
+                                    $crud->leer();
+                                    if($crud->filas[0]['primer_ape'] == "")
+                                    {
+                                        echo $row['cedula']."<br>";
+                                        echo "<tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>"; 
+                                    }
+                                    else
+                                    {
+                                        foreach ($crud->filas as $fila) 
+                                        {   
+                                            $data = ["$fila[primer_nom] "."$fila[primer_ape]" => $row['id']];
+                                            $boton = "<a href='conformantes_ubch.php?id=".base64_encode($row['id'])."' class='btn btn-danger btn-xs' data->Ver <span class='glyphicon glyphicon-user'></span></a>";
+                                            echo "<tr>
+                                                    <td>$row[nac]</td>
+                                                    <td>$row[cedula]</td>
+                                                    <td>".$fila['primer_nom']." ".$fila['segundo_nom']."</td>
+                                                    <td>".$fila['primer_ape']." ".$fila['segundo_ape']."</td>
+                                                    <td>".$row['cargo']."</td>
+                                                    <td>".$row['conformantes']."</td>
+                                                    <td>".$boton."</td>
+                                                </tr>"; 
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                echo "<tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>"; 
+                            }
+                        }
 					?>
 				</tbody>
 			</table>

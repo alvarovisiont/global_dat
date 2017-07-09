@@ -18,8 +18,7 @@ class Crud
 		$model = new Conexion();
 		$db = $model->conectar();
 		$sql = "INSERT INTO $this->from ($this->campos) VALUES ($this->valores)";
-		/*echo $sql;
-		exit();*/
+		//exit();*/
 
 		$res = $db->prepare($sql);
 		$res->execute();

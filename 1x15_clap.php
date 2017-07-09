@@ -25,7 +25,7 @@
                             {
                                 foreach ($crud->filas1 as $row) 
                                 {
-                                    $crud->sql = "SELECT id from 1x15_clap where id_lider_1x15 = $row[id_usu_det]";
+                                    $crud->sql = "SELECT id from 1x15_clap where id_lider_1x15 = $row[id_usu_det] and estado = $_SESSION[estado] and municipio = $_SESSION[municipio]";
                                     $crud->total();
                                     $integrantes = $crud->total;
 

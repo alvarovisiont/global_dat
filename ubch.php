@@ -9,47 +9,99 @@
 					<th>Nac</th>
 					<th>cédula</th>
 					<th>Nombre</th>
-					<th>Apellido</th>
 					<th>Cargo</th>
-					<th>UBCH</th>
 				</thead>
 				<tbody>
 					<?php
-						$data = [];
-						$crud->sql = "SELECT id, nac, cedula, (SELECT descripcion from ubch_cargoss where id_cargo = ubch.id_cargo) as cargo,
-										(SELECT count(*) from caracterizacion where id_ubch_lider = ubch.id) as conformantes from ubch where id_centro = ".$_SESSION['ubch'];
-						$crud->leer();
-						foreach ($crud->filas as $row) 
-						{
-							 $crud->sql = "SELECT primer_ape, segundo_ape, primer_nom, segundo_nom from rep_nueva2 where cedula = ".$row['cedula'];;
-							$crud->leer();
-							if($crud->filas[0]['primer_ape'] == "")
-							{
-								echo "<tr>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-										</tr>";	
-							}
-							else
-							{
-								foreach ($crud->filas as $fila) 
-								{	
-									$data = ["$fila[primer_nom] "."$fila[primer_ape]" => $row['id']];
-									echo "<tr>
-											<td>$row[nac]</td>
-											<td>$row[cedula]</td>
-											<td>".$fila['primer_nom']." ".$fila['segundo_nom']."</td>
-											<td>".$fila['primer_ape']." ".$fila['segundo_ape']."</td>
-											<td>".$row['cargo']."</td>
-											<td>".$row['conformantes']."</td>
-										</tr>";	
-								}
-							}
-						}
+                        $data = [];
+
+                        if($_SESSION['estado'] == 17)
+                        {
+                            $crud->sql = "SELECT id,cedula, nombre, telefono, cargo,
+                                        (SELECT count(*) from caracterizacion where id_ubch_lider = ubch_sucre.id and estado = $_SESSION[estado]) as conformantes from ubch_sucre where ubch = ".$_SESSION['ubch'];
+                            $crud->leer();
+                            if(count($crud->filas) > 0)
+                            {
+                                foreach ($crud->filas as $row) 
+                                {
+                                    if($row['conformantes'] > 0)
+                                    {
+                                        $data = ["$row[nombre]" => $row['id']];
+                                    }
+                                    echo "<tr>
+                                                <td>".substr($row['cedula'], 0,1)."</td>
+                                                <td>".substr($row['cedula'], 2)."</td>
+                                                <td>".$row['nombre']."</td>
+                                                <td>".$row['cargo']."</td>
+                                            </tr>"; 
+                                }
+                            }
+                            else
+                            {
+                                echo "<tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>"; 
+                            }
+                        }
+                        else
+                        {
+                            $crud->sql = "SELECT id, nac, cedula, (SELECT descripcion from ubch_cargoss where id_cargo = ubch.id_cargo) as cargo,
+                                        (SELECT count(*) from caracterizacion where id_ubch_lider = ubch.id) as conformantes from ubch where id_centro = ".$_SESSION['ubch'];    
+
+                            $crud->leer();
+                            if(count($crud->filas) > 0)
+                            {
+                                foreach ($crud->filas as $row) 
+                                {
+                                     $crud->sql = "SELECT primer_ape, segundo_ape, primer_nom, segundo_nom from rep_nueva2 where cedula = ".$row['cedula'];
+                                    $crud->leer();
+                                    if($crud->filas[0]['primer_ape'] == "")
+                                    {
+                                        echo $row['cedula']."<br>";
+                                        echo "<tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>"; 
+                                    }
+                                    else
+                                    {
+                                        foreach ($crud->filas as $fila) 
+                                        {   
+                                            $data = ["$fila[primer_nom] "."$fila[primer_ape]" => $row['id']];
+                                            echo "<tr>
+                                                    <td>$row[nac]</td>
+                                                    <td>$row[cedula]</td>
+                                                    <td>".$fila['primer_nom']." ".$fila['segundo_nom']."</td>
+                                                    <td>".$fila['primer_ape']." ".$fila['segundo_ape']."</td>
+                                                    <td>".$row['cargo']."</td>
+                                                    <td>".$row['conformantes']."</td>
+                                                </tr>"; 
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                echo "<tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>"; 
+                            }
+                        }
+                        
 					?>
 				</tbody>
 			</table>
@@ -256,7 +308,16 @@
             var graph;
             var chartData = [
             <?php 
-               echo  $crud->sql = "SELECT id, (SELECT count(*) from caracterizacion where id_ubch_lider = ubch.id) as total from ubch where id_centro = ".$_SESSION['ubch'];
+                if($_SESSION['estado'] == 17)
+                {
+
+                    $crud->sql = "SELECT id, (SELECT count(*) from caracterizacion where id_ubch_lider = ubch_sucre.id and estado = $_SESSION[estado] and municipio = $_SESSION[municipio]) as total from ubch_sucre where ubch = ".$_SESSION['ubch'];
+                }
+                else
+                {
+                    $crud->sql = "SELECT id, (SELECT count(*) from caracterizacion where id_ubch_lider = ubch.id and estado = $_SESSION[estado] and municipio = $_SESSION[municipio]) as total from ubch where id_centro = ".$_SESSION['ubch'];
+                }
+
                 $crud->leer();
                 if(count($crud->filas) > 0)
                 {

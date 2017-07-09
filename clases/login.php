@@ -53,16 +53,42 @@
 					$_SESSION['municipio'] = $rs['id_municipio'];
 					$_SESSION['id'] = $rs['id'];
 					$_SESSION['categoria'] = $rs['categoria'];
-					if($rs['categoria'] == 3)
+					
+					if ($rs['categoria'] == "10") 
 					{
+						$_SESSION['nombre'] = $rs['otros'];
+					}
+					elseif ($rs['categoria'] == "9") 
+					{
+						$_SESSION['nombre'] = $rs['juventud'];
+					}
+					elseif ($rs['categoria'] == "8") 
+					{
+						$_SESSION['nombre']	= $rs['movimiento_social'];
+					}
+					elseif($rs['categoria'] == "7")
+					{
+						$_SESSION['clap'] = $rs['id_clap'];
+						$_SESSION['nombre'] = $rs['nombre_clap'];
+					}
+					elseif ($rs['categoria'] == "6") 
+					{
+						$_SESSION['nombre']	 = $rs['institucion'];
+					}
+					elseif ($rs['categoria'] == "5") 
+					{
+						$_SESSION['nombre']	 = $rs['mision'];
+					}
+					elseif ($rs['categoria'] == "4") 
+					{
+						$_SESSION['nombre']	= $rs['consejo_comunal'];
+					}
+					elseif ($rs['categoria'] == "3") 
+					{
+						$_SESSION['nombre']	= $rs['nombre_ubch'];
 						$_SESSION['ubch'] = $rs['ubch'];
 					}
-					elseif($rs['categoria'] == 7)
-					{
-						$_SESSION['clap'] = $rs['id_clap'];	
-					}
 
-					
 					$res->closeCursor();
 					$db = null;
 					header('location: redi.php');	

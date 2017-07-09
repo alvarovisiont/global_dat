@@ -26,8 +26,17 @@
 							</thead>
 			                <tbody style="text-align: center;">
 			                    <?php
-			                       	$crud->sql = "SELECT cedula, nac, nombre, apellido, telefono, 
-			                       					(SELECT descripcion from centro_v where cod_viejo = 1x15_clap.centro_votacion) as centro_votacion from 1x15_clap where id_lider_1x15 = $id";
+			                    	if($_SESSION['estado'] == 17)
+			                    	{
+			                    		$crud->sql = "SELECT cedula, nac, nombre, apellido, telefono, 
+			                       					(SELECT nombre_centro from centro_votaciones where ctro_prop = 1x15_clap.centro_votacion) as centro_votacion from 1x15_clap where id_lider_1x15 = $id";	
+			                    	}
+			                    	else
+			                    	{
+
+			                       		$crud->sql = "SELECT cedula, nac, nombre, apellido, telefono, 
+			                       					(SELECT descripcion from centro_v where cod_viejo = 1x15_clap.centro_votacion) as centro_votacion from 1x15_clap where 	id_lider_1x15 = $id";
+			                    	}
 			                        $crud->leer();
 			                        if(count($crud->filas) > 0)
 			                        {	foreach ($crud->filas as $row) 
@@ -83,29 +92,32 @@
                     			</thead>
                     			<tbody>
                     				<?php
-			                    		$crud->sql = "SELECT id_usu, nom_usu, ape_usu, ced, nac, telf from reg_personas_jf where id_clap1 = 			$_SESSION[clap] and ced <> ''
+			                    		$crud->sql = "SELECT id_usu, nom_usu, ape_usu, ced, nac, telf from reg_personas_jf where id_clap1 = $_SESSION[clap] and ced <> ''
 			                    						UNION 
 			                    						SELECT id_usu_det, nom_usu, ape_usu, ced, nac, telf from reg_personas_det where id_clap1 = $_SESSION[clap] and ced <> ''";
 			                    			$crud->leer1();
-			                    			foreach ($crud->filas1 as $row) 
+			                    			if(count($crud->filas) > 0)
 			                    			{
-			                    				$button = "<button type='button' class='btn btn-block btn-sm agregar' style='background-color: #C5624D; color: white;' 
-			                    					data-integrante='$row[id_usu]' 
-			                    					data-nombre='$row[nom_usu]'
-			                    					data-apellido= '$row[ape_usu]'
-			                    					data-cedula= '$row[ced]'
-			                    					data-nac= '$row[nac]'
-			                    					data-telefono= '$row[telf]'
-			                    					data-clap = '$_SESSION[clap]'
-			                    					data-id_clap_lider = '$id'>Agregar</button>";
-			                    				echo "<tr>
-			                    						<td>$row[nac]</td>			
-			                    						<td>$row[ced]</td>
-			                    						<td>$row[nom_usu]</td>
-			                    						<td>$row[ape_usu]</td>
-			                    						<td>$row[telf]</td>
-			                    						<td>".$button."</td>
-			                    					</tr>";
+			                    				foreach ($crud->filas1 as $row) 
+				                    			{
+				                    				$button = "<button type='button' class='btn btn-block btn-sm agregar' style='background-color: #C5624D; color: white;' 
+				                    					data-integrante='$row[id_usu]' 
+				                    					data-nombre='$row[nom_usu]'
+				                    					data-apellido= '$row[ape_usu]'
+				                    					data-cedula= '$row[ced]'
+				                    					data-nac= '$row[nac]'
+				                    					data-telefono= '$row[telf]'
+				                    					data-clap = '$_SESSION[clap]'
+				                    					data-id_clap_lider = '$id'>Agregar</button>";
+				                    				echo "<tr>
+				                    						<td>$row[nac]</td>			
+				                    						<td>$row[ced]</td>
+				                    						<td>$row[nom_usu]</td>
+				                    						<td>$row[ape_usu]</td>
+				                    						<td>$row[telf]</td>
+				                    						<td>".$button."</td>
+				                    					</tr>";
+				                    			}
 			                    			}
 		                    		?>
                     			</tbody>

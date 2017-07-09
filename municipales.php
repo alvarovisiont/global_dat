@@ -30,7 +30,9 @@
 										(SELECT parroquia from parroquias where id = usuarios.id_parroquia) as parroquia
 										FROM usuarios 
                                         INNER JOIN responsables ON usuarios.id = responsables.id_usuario
-                                        WHERE id_municipio = $municipio and usuarios.nivel = 3
+                                        WHERE 
+                                        id_estado = $_SESSION[estado] 
+                                        and id_municipio = $municipio and usuarios.nivel = 3
                                         ";
 						$crud->leer();
 						$total = count($crud->filas);
@@ -151,7 +153,7 @@
                             				foreach ($crud->filas as $value) 
                             				{
                             				?>
-                            					<option value='<?php echo $value["id_municipio"]; ?>'><?php echo utf8_encode($value["municipio"]); ?></option>
+                            					<option value='<?php echo $value["id_municipio"]; ?>'><?php echo  $value["municipio"]; ?></option>
                             			<?php
                             				}
                             				?>
@@ -167,7 +169,7 @@
                             				foreach ($crud->filas as $value) 
                             				{
                             				?>
-                            					<option value='<?php echo $value["id"]; ?>'><?php echo utf8_encode($value["parroquia"]); ?></option>
+                            					<option value='<?php echo $value["id"]; ?>'><?php echo $value["parroquia"]; ?></option>
                             			<?php
                             				}
                             				?>
@@ -202,12 +204,24 @@
                             	<div class="col-md-12">
                             		<section id="section1" style="display: none"> 
                             			<?php
-                            			$crud->sql = "SELECT centro_v.id_centro, descripcion from centro_v";
+                                        if($_SESSION['estado'] == 17)
+                                        {
+                                            $crud->sql = "SELECT ctro_prop as centro, nombre_centro as descripcion from centro_votaciones
+                                                where estado = $_SESSION[estado] and municipio = $_SESSION[municipio]";    
+                                        }
+                                        else
+                                        {
+
+                            			 $crud->sql = "SELECT centro_v.id_centro, descripcion from centro_v INNER JOIN ubch ON centro_v.id_centro = ubch.id_centro";
+                                        }
+
                             			$crud->leer();
-                            			$ubch = $crud->filas;
+                                        $ubch = $crud->filas;
+
 										$crud->sql = "SELECT ubch from usuarios where ubch <> 0 and ubch is not null";
                             			$crud->leer();                            			
                             			$ubch_usuarios = $crud->filas;
+
                             			echo "<select name='ubch' id='ubch' class='form-control'>";
                                         echo "<option></option><option></option>";
                             			foreach ($ubch as $row) 
@@ -216,15 +230,15 @@
                             				{
                             					foreach ($ubch_usuarios as $row1) 
                             					{
-                            						if($row1['ubch'] != $row['id_centro'])
+                            						if($row1['ubch'] != $row['centro'])
                             						{
-                            							echo "<option value='".$row['id_centro']."'>".utf8_encode($row['descripcion'])."</option>";
+                            							echo "<option value='".$row['centro']."' data-descripcion='".$row['descripcion']."'>".$row['descripcion']."</option>";
                             						}
                             					}
                             				}
                             				else
                             				{
-                            					echo "<option value='".$row['id_centro']."'>".utf8_encode($row['descripcion'])."</option>";	
+                            					echo "<option value='".$row['centro']."' data-descripcion='".$row['descripcion']."'>".$row['descripcion']."</option>";	
                             				}
                             			}
                             			echo "</select>";
@@ -251,12 +265,15 @@
                                         <option></option>
                             			<?php
                             				
-                            				$crud->sql = "SELECT id_usu, ape_usu, comunidad from reg_usuarios where grupo <> '' and id_estado = $_SESSION[estado] and id_municipio = $_SESSION[municipio]";
+                            				$crud->sql = "SELECT reg_usuarios.id_usu, reg_usuarios.ape_usu, comunidad from reg_usuarios 
+                                                        INNER JOIN reg_usuarios_det ON reg_usuarios_det.id_usu = reg_usuarios.id_usu
+                                                        where
+                                                         id_estado = $_SESSION[estado] and id_municipio = $_SESSION[municipio] and nivel_usu = 5";
                             				$crud->leer1();
                             				$claps = $crud->filas1;
                             				$crud->sql = "SELECT id_clap from usuarios where id_clap <> 0 and id_clap is not null";
-                            				$crud->leer1();
-                            				$clap_registrado = $crud->filas1;
+                            				$crud->leer();
+                            				$clap_registrado = $crud->filas;
                             				foreach ($claps as $row) 
                             				{
                             					if(count($clap_registrado) > 0)
@@ -265,13 +282,13 @@
                             						{
                             							if($row1['id_clap'] != $row['id_usu'])
                             							{
-                            								echo "<option value='".$row['id_usu']."'>".utf8_encode($row['comunidad'])." - ".utf8_encode($row['ape_usu'])."</option>";
+                            								echo "<option value='".$row['id_usu']."' data-codigo='".$row['ape_usu']."'>".utf8_encode($row['comunidad'])." - ".utf8_encode($row['ape_usu'])."</option>";
                             							}
                             						}
                             					}
                             					else
                             					{
-                            						echo "<option value='".$row['id_usu']."'>".utf8_encode($row['comunidad'])." - ".utf8_encode($row['ape_usu'])."</option>";
+                            						echo "<option value='".$row['id_usu']."' data-codigo='".$row['ape_usu']."'>".utf8_encode($row['comunidad'])." - ".utf8_encode($row['ape_usu'])."</option>";
                             					}
                             				}
                             				?>
@@ -418,14 +435,25 @@
                                     <section id="section1_modi" style="display: none"> 
                                         <?php
 
-                                        $crud->sql = "SELECT centro_v.id_centro, descripcion from centro_v INNER JOIN ubch ON centro_v.id_centro = ubch.id_centro";
+                                        if($_SESSION['estado'] == 17)
+                                        {
+                                            $crud->sql = "SELECT ctro_prop as centro, nombre_centro as descripcion from centro_votaciones
+                                                where estado = $_SESSION[estado] and municipio = $_SESSION[municipio]";    
+                                        }
+                                        else
+                                        {
+                                            $crud->sql = "SELECT centro_v.id_centro as centro, descripcion from centro_v INNER JOIN ubch ON centro_v.id_centro = ubch.id_centro";
+                                        }
+
                                         $crud->leer();
                                         $ubch = $crud->filas;
+                                        
                                         echo "<select name='ubch_modi' id='ubch_modi' class='form-control'>";
                                         echo "<option></option><option></option>";
+
                                         foreach ($ubch as $row) 
                                         {
-                                                echo "<option value='".$row['id_centro']."'>".utf8_encode($row['descripcion'])."</option>"; 
+                                                echo "<option value='".$row['centro']."' data-descripcion='".$row['descripcion']."'>".$row['descripcion']."</option>"; 
                                         }
                                         echo "</select>";
                                         ?>
@@ -451,12 +479,14 @@
                                         <option></option>
                                         <?php
                                             
-                                            $crud->sql = "SELECT id_usu, ape_usu, comunidad from reg_usuarios where grupo <> '' and id_estado = $_SESSION[estado] and id_municipio = $_SESSION[municipio]";
+                                            $crud->sql = "SELECT reg_usuarios.id_usu, reg_usuarios.ape_usu, comunidad from reg_usuarios
+                                                        INNER JOIN reg_usuarios_det ON reg_usuarios_det.id_usu = reg_usuarios.id_usu
+                                                         where id_estado = $_SESSION[estado] and id_municipio = $_SESSION[municipio] and nivel_usu = 5";
                                             $crud->leer1();
                                             $claps = $crud->filas1;
                                             foreach ($claps as $row) 
                                             {
-                                                    echo "<option value='".$row['id_usu']."'>".utf8_encode($row['comunidad'])." - ".utf8_encode($row['ape_usu'])."</option>";
+                                                    echo "<option value='".$row['id_usu']."' data-codigo='".$row['ape_usu']."'>".utf8_encode($row['comunidad'])." - ".utf8_encode($row['ape_usu'])."</option>";
                                                 
                                             }
                                             ?>
@@ -515,7 +545,6 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header login-header">
-                <button type="button" class="close" data-dismiss="modal">×</button>
                 <h4 class="modal-title">Modificar Contraseña</h4>
             </div>
             <form class="form-horizontal" id="form_clave" action="grabar_locales.php" method="POST">
@@ -545,7 +574,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="add-project">Grabar</button>
-                    <button type="button" class="cancel" data-dismiss="modal">Cerrar</button>
                 </div>
             </form>
         </div>
@@ -811,10 +839,24 @@ require_once "footer.php";
                 return false;
             }
 
+            datos = $(this).serialize()
+
+            if($("#clap").val() != "")
+            {   
+                var option = $("#clap").children('[value="'+$("#clap").val()+'"]')
+                datos += '&nombre_clap='+option.data().codigo
+            }
+
+            if($("#ubch").val() != "")
+            {
+                var option = $("#ubch").children('[value="'+$("#ubch").val()+'"]')
+                datos += '&nombre_ubch='+option.data().descripcion   
+            }
+
 			$.ajax({
 					url: $(this).attr('action'),
 					type: "POST",
-					data: $(this).serialize(),
+					data: datos,
 					success: function()
 					{
 							swal({
@@ -840,10 +882,6 @@ require_once "footer.php";
 			});
 			return false;
 		});
-
-        $("#form_modificar").submit(function(){
-            $("#categoria_modi").prop('disabled', false);
-        });
 
 //-----------modal_modificar------------------------------------
 
@@ -942,11 +980,52 @@ $("#modificar_cuenta").on('hidden.bs.modal', function(){
 });
 
     $("#form_modificar").submit(function(){
+
         $("#categoria_modi").prop('disabled', false);
-    });
 
+        datos = $(this).serialize()
 
+        if($("#clap_modi").val() != "")
+        {   
+            var option = $("#clap_modi").children('[value="'+$("#clap_modi").val()+'"]')
+            datos += '&nombre_clap='+option.data().codigo
+        }
 
+        if($("#ubch_modi").val() != "")
+        {
+            var option = $("#ubch_modi").children('[value="'+$("#ubch_modi").val()+'"]')
+            datos += '&nombre_ubch='+option.data().descripcion   
+        }
+
+        $.ajax({
+                url: $(this).attr('action'),
+                type: "POST",
+                data: datos,
+                success: function()
+                {
+                        swal({
+                        title: "Cuenta Modificada",
+                        type: "success",
+                        showButtonCancel: false,
+                        confirmButtonText: "Cerrar",
+                        confirmButtonClass: "btn btn-info",
+                        closeOnConfirm: true
+                        },function(confirm){
+                            if(confirm)
+                            {
+                                $("#form-agregar").keypress(function(e){
+                                    if(e.keyCode == 13)
+                                    {
+                                        return false;
+                                    }
+                                });
+                                window.location.reload();
+                            }
+                        });
+                }
+        })
+        return false;
+    })
 //------------------------------------------------------------------
 
         function pregunta()
